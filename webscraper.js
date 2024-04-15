@@ -137,4 +137,4 @@ const scrape = async (searchTerm, lowLimit, highLimit) => {
 
 module.exports = scrape;
 
-// better off usign a loop or recursion.
+// better off using a loop or recursion.
