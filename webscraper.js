@@ -3,13 +3,18 @@
  * It sets up a headless browser, navigates to the website, performs a search, and extracts listing data.
  */
 
-import puppeteer from "puppeteer";
+const puppeteer = require('puppeteer-extra');
+const StealthPlugin = require('puppeteer-extra-plugin-stealth')
+const { executablePath } = require('puppeteer')
 
-(async () => {
+puppeteer.use(StealthPlugin())
+
+const carousellScrape = async (searchTerm) => {
 	// Launch a headless browser instance
 	const browser = await puppeteer.launch({
-		headless:false,
+		// headless:false,
 		defaultViewport: null,
+		executablePath: executablePath()
 	});
 
 	// Create a new page within the browser instance
@@ -43,7 +48,7 @@ import puppeteer from "puppeteer";
 	// Type the search query and submit the search form
 	await page.type(
 		"input[placeholder='Search for anything and everything']",
-		"rtx 4060"
+		searchTerm
 	);
 	await page.click('button[type="submit"]');
 
@@ -83,8 +88,10 @@ import puppeteer from "puppeteer";
 	//TODO: have this function return to another file that will take it and input it to google sheets 
 
 	// Output the extracted listings to the console
-	console.log(listings);
 
 	// Close the browser instance
 	await browser.close();
-})();
+	return(listings);
+};
+
+module.exports = carousellScrape;
