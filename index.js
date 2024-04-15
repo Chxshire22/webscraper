@@ -1,5 +1,5 @@
 const express = require("express");
-const scrapeCarousell  = require("./webscraper.js");
+const scrape  = require("./webscraper.js");
 
 const app = express();
 const PORT = 3000;
@@ -10,7 +10,7 @@ app.get("/", (req, res) => {
 
 app.get("/scrape", async (req, res) => {
 	const search = req.query.search;
-	const searchResults = await scrapeCarousell(search);
+	const searchResults = await scrape(search);
 	res.json(searchResults);
 });
 
