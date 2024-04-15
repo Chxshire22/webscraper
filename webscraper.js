@@ -8,6 +8,7 @@ import puppeteer from "puppeteer";
 (async () => {
 	// Launch a headless browser instance
 	const browser = await puppeteer.launch({
+		headless:false,
 		defaultViewport: null,
 	});
 
