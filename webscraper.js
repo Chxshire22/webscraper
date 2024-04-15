@@ -17,7 +17,7 @@ const VIEWPORT = {
   deviceScaleFactor: 1,
 };
 
-const scrape = async (searchTerm) => {
+const scrape = async (searchTerm, lowLimit, highLimit) => {
   let results = {};
 
   // Launch a headless browser instance
@@ -60,23 +60,25 @@ const scrape = async (searchTerm) => {
       const listingsArr = document.querySelectorAll(
         'div[data-testid^="listing-card-"]'
       );
+      const slicedArr = Array.from(listingsArr).slice(0, 10);
       // Map each listing card to extract relevant information
-      return Array.from(listingsArr)
-        .map((listing) => {
-          const title = listing.querySelector(
-            'p[style="--max-line: 2;"]'
-          ).innerHTML;
-          const unformattedPrice =
-            listing.querySelector('p[title^="S$"]').innerHTML;
-          const price = unformattedPrice.replace("S$", "").replace(",", "");
-          const link = `https://www.carousell.sg${listing
-            .querySelector('a[href^="/p/"]')
-            .getAttribute("href")}`;
+      return Array.from(slicedArr).map((listing) => {
+        const title = listing.querySelector(
+          'p[style="--max-line: 2;"]'
+        ).innerHTML;
+        const unformattedPrice =
+          listing.querySelector('p[title^="S$"]').innerHTML;
+        const price = unformattedPrice.replace("S$", "").replace(",", "");
+        const link = `https://www.carousell.sg${listing
+          .querySelector('a[href^="/p/"]')
+          .getAttribute("href")}`;
+        const imgSrc = listing
+          .querySelector(`img[alt="${title}"]`)
+          .getAttribute("src");
 
-          return { title, price, link };
-        })
-        .sort((a, b) => a.price - b.price)
-        .slice(0, 5);
+        return { title, price, link, imgSrc };
+      });
+      // .sort((a, b) => a.price - b.price)
     } catch (error) {
       console.log(error);
     }
@@ -106,24 +108,23 @@ const scrape = async (searchTerm) => {
     try {
       // Select all listing cards
       const listingsArr = document.querySelectorAll("li.s-item");
-      const listingsWithoutFirstItem = Array.from(listingsArr).slice(1);
+      const listingsWithoutFirstItem = Array.from(listingsArr).slice(1, 11);
 
       // Map each listing card to extract relevant information
-      return Array.from(listingsWithoutFirstItem)
-        .map((listing) => {
-          const title = listing.querySelector('span[role="heading"]').innerText;
-          const unformattedPrice = listing.querySelector(
-            '.s-item__price>span[class="ITALIC"]'
-          ).innerText;
-          const price = unformattedPrice.replace("S$", "").replace(",", "");
-          const link = listing
-            .querySelector("a.s-item__link")
-            .getAttribute("href");
+      return Array.from(listingsWithoutFirstItem).map((listing) => {
+        const title = listing.querySelector('span[role="heading"]').innerText;
+        const unformattedPrice = listing.querySelector(
+          '.s-item__price>span[class="ITALIC"]'
+        ).innerText;
+        const price = unformattedPrice.replace("S$", "").replace(",", "");
+        const link = listing
+          .querySelector("a.s-item__link")
+          .getAttribute("href");
+        const imgSrc = listing.querySelector('img[src^="https://i.ebayimg.com/thumbs/images/"]').getAttribute("src");
 
-          return { title, price, link };
-        })
-        .sort((a, b) => a.price - b.price)
-        .slice(0, 5);
+        return { title, price, link, imgSrc };
+      });
+      // .sort((a, b) => a.price - b.price)
     } catch (error) {
       console.log(error);
     }
@@ -135,3 +136,5 @@ const scrape = async (searchTerm) => {
 };
 
 module.exports = scrape;
+
+// better off usign a loop or recursion.
