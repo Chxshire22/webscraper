@@ -72,11 +72,11 @@ const scrape = async (searchTerm, lowLimit, highLimit) => {
         const link = `https://www.carousell.sg${listing
           .querySelector('a[href^="/p/"]')
           .getAttribute("href")}`;
-        const imgSrc = listing
-          .querySelector(`img[alt="${title}"]`)
-          .getAttribute("src");
+        // const imgSrc = listing
+        //   .querySelector(`img[alt="${title}"]`)
+        //   .getAttribute("src");
 
-        return { title, price, link, imgSrc };
+        return { title, price, link};
       });
       // .sort((a, b) => a.price - b.price)
     } catch (error) {
@@ -120,9 +120,9 @@ const scrape = async (searchTerm, lowLimit, highLimit) => {
         const link = listing
           .querySelector("a.s-item__link")
           .getAttribute("href");
-        const imgSrc = listing.querySelector('img[src^="https://i.ebayimg.com/thumbs/images/"]').getAttribute("src");
+        // const imgSrc = listing.querySelector('img[src^="https://i.ebayimg.com/thumbs/images/"]').getAttribute("src");
 
-        return { title, price, link, imgSrc };
+        return { title, price, link };
       });
       // .sort((a, b) => a.price - b.price)
     } catch (error) {
